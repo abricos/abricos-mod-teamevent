@@ -7,6 +7,7 @@
  */
 
 require_once 'modules/team/includes/classesapp.php';
+require_once 'modules/team/includes/classesapp.php';
 require_once 'classesman.php';
 
 class TeamEventNavigator extends TeamAppNavigator { }

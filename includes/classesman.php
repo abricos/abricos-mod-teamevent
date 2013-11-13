@@ -80,10 +80,12 @@ class TeamEventManager extends TeamAppManager {
 	public function Event($eventid, $clearCache = false){
 		if (!$this->IsViewRole()){ return null; }
 		
+		$cacheName = "event";
+		
 		if ($clearCache){
-			$this->CacheClear("event", $eventid);
+			$this->CacheClear($cacheName, $eventid);
 		}
-		$event = $this->Cache("event", $eventid);
+		$event = $this->Cache($cacheName, $eventid);
 		if (!empty($event)){ return $event; }
 		
 		$dbEvent = TeamEventQuery::Event($this, $eventid);
@@ -98,7 +100,7 @@ class TeamEventManager extends TeamAppManager {
 		
 		$event->detail = $this->NewEventDetail($event, $dbEvent);
 		
-		$this->CacheAdd("event", $eventid, $event);
+		$this->CacheAdd($cacheName, $eventid, $event);
 	
 		return $event;
 	}
@@ -163,7 +165,7 @@ class TeamEventManager extends TeamAppManager {
 			if (empty($event)){ return null; }
 			TeamEventQuery::EventUpdate($this->db, $this->moduleName, $teamid, $eventid, $d);
 		}
-		$this->EventCacheClear($eventid, 'event');
+		$this->CacheClear();
 		
 		return $eventid;
 	}

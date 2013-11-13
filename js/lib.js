@@ -139,48 +139,21 @@ Component.entryPoint = function(NS){
 			'widget': 'EventEditorWidget'
 		}, cfg['eventEditor'] || {});
 
-		
-		this.init(callback, cfg);
+		EventManager.superclass.constructor.call(this, modName, 'event', callback, cfg);
 	};
-	EventManager.prototype = {
+	YAHOO.extend(EventManager, Brick.mod.team.TeamAppManager, {
 		init: function(callback, cfg){
-			this.cfg = cfg;
+			EventManager.superclass.init.call(this, callback, cfg);
 			
 			this.EventClass			= cfg['EventClass'];
 			this.EventDetailClass	= cfg['EventDetailClass'];
 			this.EventListClass		= cfg['EventListClass'];
 			this.NavigatorClass		= cfg['NavigatorClass'];
 			
-			this._loadInitData = true;
 			this._cacheEvent = {};
 			
 			NS.life(callback, this);
 		},
-		
-		ajax: function(d, callback){
-			d = d || {};
-			d['tm'] = Math.round((new Date().getTime())/1000);
-			if (this._loadInitData){
-				d['initdata'] = true;
-			}
-			var __self = this;
-			Brick.ajax(this.modName, {
-				'data': d,
-				'event': function(request){
-					var d = L.isValue(request) && L.isValue(request.data) ? request.data : null,
-						result = L.isValue(d) ? (d.result ? d.result : null) : null;
-						
-					if (L.isValue(d) && L.isValue(d['initdata'])){
-						__self._loadInitData = false;
-						__self.onLoadInitData(d['initdata']);
-					}
-					
-					NS.life(callback, result);
-				}
-			});
-		},
-		
-		onLoadInitData: function(d){ },
 		
 		_updateEvent: function(team, d){
 			if (!(L.isValue(d) && L.isValue(d['event']))){
@@ -278,8 +251,7 @@ Component.entryPoint = function(NS){
 				NS.life(callback);
 			});
 		}
-		
-	};
+	});
 	NS.EventManager = EventManager;
 	
 	EventManager.get = function(modName){
