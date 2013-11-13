@@ -61,13 +61,7 @@ class TeamEventManager extends TeamAppManager {
 			case "eventsave": return $this->EventSaveToAJAX($d->teamid, $d->savedata);
 			case "eventremove": return $this->EventRemove($d->teamid, $d->eventid);
 		}
-		return null;
-	}
-	
-	public function InitDataToAJAX(){
-		$ret = new stdClass();
-		$ret->initdata = new stdClass();
-		return $ret;
+		return parent::AJAXMethod($d);
 	}
 	
 	/**

@@ -6,7 +6,7 @@
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
-require_once 'modules/team/includes/classesapp.php';
+require_once 'modules/team/includes/classes.php';
 require_once 'modules/team/includes/classesapp.php';
 require_once 'classesman.php';
 

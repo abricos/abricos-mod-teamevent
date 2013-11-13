@@ -34,13 +34,14 @@ Component.entryPoint = function(NS){
 			this.cfg = cfg;
 		},
 		buildTData: function(event, cfg){
+			var taData = event.taData;
 			return {
 				'id': event.id,
 				'tl': event.title,
 				'dsc': '',
-				'urlview': event.navigator.eventView(),
+				'urlview': taData.navigator.eventView(event.id),
 				'img': !L.isValue(event.logo) ? '' : this._TM.replace('img', {
-					'urlview': event.navigator.eventView(),
+					'urlview': taData.navigator.eventView(event.id),
 					'fid': event.logo,
 					'tl': event.title
 				})
@@ -128,41 +129,32 @@ Component.entryPoint = function(NS){
 	YAHOO.extend(TeamEventListWidget, BW, {
 		init: function(teamid, cfg){
 			this.teamid = teamid;
-			this.team = null;
+			this.taData = null;
 			this.cfg = cfg;
 			
-			this.eventManager = null;
 			this._editor = null;
 			this.listWidget = null;
 		},
 		onLoad: function(teamid, cfg){
 			var __self = this;
-			NS.EventManager.init(cfg['modName'], function(man){
-				if (!L.isValue(man)){ return; }
-				
-				__self.eventManager = man;
-				__self.reloadList();
+			
+			Brick.mod.team.teamAppDataLoad(teamid, cfg['modName'], 'event', function(taData){
+				__self.onLoadTeamAppData(taData);
 			});
+		},
+		onLoadTeamAppData: function(taData){
+			this.taData = taData;
+
+			this.reloadList();
 		},
 		reloadList: function(){
 			this.elShow('loading');
 			this.elHide('rlwrap,badd');
 			
-			var __self = this;
-			this.eventManager.eventListLoad(this.teamid, function(list, team){
-				if (!L.isValue(team)){
-					__self.onLoadList(null);
-				}else{
-					__self.team = team;
-					__self.onLoadList(list);
-				}
+			var __self = this, taData = this.taData;
+			taData.manager.eventListLoad(taData, function(list){
+				__self.onLoadList(list);
 			});
-		},
-		onClick: function(el, tp){
-			switch(el.id){
-			case tp['badd']: this.showEventEditor(); return true;
-			}
-			return false;
 		},
 		onLoadList: function(list){
 			this.list = list;
@@ -170,18 +162,27 @@ Component.entryPoint = function(NS){
 			this.elHide('loading');
 			this.elShow('rlwrap');
 			
-			if (!L.isValue(this.team)){
-				return;
-			}
-			if (this.team.role.isAdmin){
-				this.elShow('badd');
-			}
+			if (!L.isValue(list)){ return; }
 			
 			if (L.isValue(this.listWidget)){
 				this.listWidget.destroy();
 			}
 			
-			this.listWidget = new NS.EventListWidget(this.gel('list'), this.list); 
+			this.listWidget = new NS.EventListWidget(this.gel('list'), this.list);
+
+			if (this.taData.team.role.isAdmin){
+				this.elShow('badd');
+			
+				var mcfg = this.taData.manager.cfg['eventEditor'];
+				this.componentLoad(mcfg['module'], mcfg['component'], function(){
+				}, {'hide': 'bbtns', 'show': 'edloading'});
+			}
+		},
+		onClick: function(el, tp){
+			switch(el.id){
+			case tp['badd']: this.showEventEditor(); return true;
+			}
+			return false;
 		},
 		closeEditors: function(){
 			if (L.isNull(this._editor)){ return; }
@@ -192,22 +193,19 @@ Component.entryPoint = function(NS){
 		showEventEditor: function(){
 			this.closeEditors();
 
-			var __self = this, cfg = this.cfg, mcfg = this.eventManager.cfg['eventEditor'];
+			var __self = this, cfg = this.cfg, mcfg = this.taData.manager.cfg['eventEditor'];
+			this.elHide('btns,list');
 
-			this.componentLoad(mcfg['module'], mcfg['component'], function(){
-				__self.elHide('btns,list');
-
-				__self._editor = new Brick.mod[mcfg['module']][mcfg['widget']](__self.gel('editor'), __self.teamid, 0, {
-					'modName': cfg['modName'],
-					'callback': function(act){
-						__self.closeEditors();
-						
-						if (act == 'save'){ 
-							__self.reloadList();
-						}
+			this._editor = new Brick.mod[mcfg['module']][mcfg['widget']](this.gel('editor'), this.teamid, 0, {
+				'modName': cfg['modName'],
+				'callback': function(act){
+					__self.closeEditors();
+					
+					if (act == 'save'){ 
+						__self.reloadList();
 					}
-				});
-			}, {'hide': 'bbtns', 'show': 'edloading'});
+				}
+			});
 		}
 	});
 	
