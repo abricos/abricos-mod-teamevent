@@ -1,0 +1,99 @@
+<!--{widget}-->
+<div class="aw-team" id="{i#id}">
+
+	<div id="{i#loading}" class="loading">
+		<img src="/images/loading.gif" />
+		Идет загрузка данных. Пожалуйста, подождите...
+	</div>
+
+	<div id="{i#editor}" class="eventeditor editform" style="display: none">
+		<div class="{v#cledst}">
+			<div class="group">
+			
+				<h3 class="edstnew">{##eventnew}</h3>
+				<h3 class="edstedit">{##eventedit}</h3>
+
+				<dl class="fldtitle">
+					<dt>Название</dt>
+					<dd>
+						<input id="{i#title}" class="inp" placeholder="" />
+						<div class="dsc">
+							{##eventtitledsc}
+						</div>
+					</dd>
+				</dl>
+				
+				<dl class="fldfromdate">
+					<dt>Начало мероприятия</dt>
+					<dd>
+						<div id="{i#fdt}"></div>
+					</dd>
+				</dl>
+
+				<div id="{i#ofieldsbeforovertitle}"></div>
+				
+				<div id="{i#ofieldsaftertitle}"></div>
+
+				<div id="{i#ofieldsafterovertitle}"></div>
+			
+				<dl class="flddescript">
+					<dt>{##eventdesc}</dt>
+					<dd>
+						<textarea id="{i#descript}" class="inp"></textarea>
+						<div class="dsc">
+							{##eventdescdsc}
+						</div>
+					</dd>
+				</dl>
+
+				<dl class="fldlogo">
+					<dt>Логотип</dt>
+					<dd>
+						<div id="{i#logo}"></div>
+						<div class="dsc">
+							{##logodsc}
+						</div>
+					</dd>
+				</dl>
+				
+				<div id="{i#overfields}"></div>
+				
+			</div>
+	
+			<dl>
+				<dt>&nbsp;</dt>
+				<dd class="baction">
+					<span id="{i#btns}">
+						<input id="{i#bcreate}" value="Создать" type="button" class="btn edstnew" />
+						<input id="{i#bsave}" value="Сохранить" type="button" class="btn edstedit" />
+						<input id="{i#bcancel}" value="Отмена" type="button" class="btn" />
+					</span>
+					<span id="{i#bloading}" style="display: none">
+						<img src="/images/loading.gif" class="ldg" /> Сохранение...
+					</span>
+				</dd>
+			</dl>
+
+			<div class="clear"></div>
+		</div>
+	</div>
+</div>
+
+<!--{removepanel}-->
+<div class='hd'>{##removetitle}</div>
+<div class='bd aw-sportclub'>
+	<div id="{i#dialogremove}" class="field">
+		<p>
+			{##removedesc}
+		</p>
+		<div class="buttons right">
+			<span id="{i#btns}">
+				<input id="{i#bremove}" value="Удалить" type="button" />
+				<input id="{i#bcancel}" value="Отмена" type="button" />
+			</span>
+			<span id="{i#bloading}" style="display: none">
+				<img src="/images/loading.gif" /> Удаление...
+			</span>
+		</div>
+	</div>
+</div>

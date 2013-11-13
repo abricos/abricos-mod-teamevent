@@ -1,0 +1,60 @@
+<!--{team}-->
+<div id="{i#id}" class="aw-team">
+	<div id="{i#loading}" class="loading">
+		<img src="/images/loading.gif" /> Идет загрузка данных <br /> Пожалуйста, подождите...
+	</div>
+	<div id="{i#rlwrap}" style="display: none">
+		<div class="hdtitle">
+			<div id="{i#btns}" class="rbtns">
+				<span id="{i#bbtns}">
+					<a id="{i#badd}" href="#" class="habtn" style="display: none">{##baddevent}</a>
+				</span>
+				<span id="{i#edloading}" style="display: none"><img src="/images/loading.gif" /> Загрузка...</span>
+			</div>
+			<span class="tl">{##events}</span>
+		</div>
+		<div id="{i#editor}" class="cmeditor"></div>
+		<div id="{i#list}" class="cmlist"></div>
+	</div>
+</div>
+
+<!--{list}-->
+<div id="{i#id}" class="eventlist">
+	<div id="{i#list}"></div>
+</div>
+
+<!--{row}-->
+<div id="{i#id}" class="eventrow">
+	<div class="wrp">
+		<div class="logo">
+			<div class="tmb tmb100">{v#img}</div>
+		</div>
+		
+		<div class="cont">
+			<div class="tl">
+				<a href="{v#urlview}">{v#tl}</a>
+			</div>
+			<div class="dsc">
+				{v#dsc}
+			</div>
+			<div class="info">
+			<!-- 
+				<span class="members">Участников: <span class="num">{v#mbrcnt}</span></span>
+			 -->
+			</div>
+		</div>
+		
+		<div class="clear"></div>
+	</div>
+</div>
+
+
+<!--{img}-->
+<a href="{v#urlview}" class="tmbpre" title="{v#tl}">
+	<img src="/filemanager/i/{v#fid}/w_100-h_100/eventlogo/" />
+</a>
+
+<!--{empty}-->
+<div id="{i#id}" class="emptyrow">
+	Список пуст
+</div>

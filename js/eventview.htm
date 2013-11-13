@@ -1,0 +1,60 @@
+<!--{widget}-->
+<div id="{i#id}" class="aw-team aw-teamevent">
+
+	<div id="{i#loading}" class="loading">
+		<img src="/images/loading.gif" /> Идет загрузка данных <br />
+		Пожалуйста, подождите...
+	</div>
+
+	<div id="{i#nullitem}" class="nullitem">
+		{##nullitem}
+	</div>
+
+	<div id="{i#rlwrap}" class="eventview">
+		<div class="hdtitle">
+			<div id="{i#btns}" class="rbtns" style="display: none">
+				<span id="{i#bbtns}">
+					<a id="{i#bedit}" href="#" class="habtn">Редактировать</a>
+					<a id="{i#bremove}" href="#" class="habtn">Удалить</a>
+				</span>
+				<span id="{i#edloading}" style="display: none">
+					<img src="/images/loading.gif" /> Загрузка...
+				</span>
+			</div>
+			<span class="tl" id="{i#title}"></span>
+		</div>
+
+		<div id="{i#view}">
+			<div class="viewform">
+			
+				<dl id="{i#fldfromdate}">
+					<dt>Начало мероприятия</dt>
+					<dd>
+						<span id="{i#fromdate}"></span>, <span id="{i#fromdatetime}"></span>
+					</dd>
+				</dl>
+			
+			
+				<div id="{i#ofieldsbeforovertitle}"></div>
+				
+				<div id="{i#ofieldsaftertitle}"></div>
+
+				<div id="{i#ofieldsafterovertitle}"></div>
+				
+				<dl id="{i#flddescript}">
+					<dt>{##about}</dt>
+					<dd>
+						<div id="{i#descript}"></div>
+					</dd>
+				</dl>
+
+				<div class="clear"></div>
+				
+				<div id="{i#ofieldsend}"></div>
+				
+			</div>
+			
+		</div>		
+		<div id="{i#editor}" class="clear"></div>	
+	</div>
+</div>

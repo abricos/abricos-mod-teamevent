@@ -1,0 +1,31 @@
+/* * * * List * * * */
+.aw-team .eventlist .empty {
+ 	font-style: italic;
+    margin: 70px 0;
+    text-align: center;	
+}
+.aw-team .eventlist .eventrow {
+	border: 1px solid #E3E3D7;
+    margin-bottom: 10px;
+    padding: 10px 15px;	
+}
+.aw-team .eventlist .eventrow .wrp {
+	position: relative;
+}
+.aw-team .eventlist .eventrow .logo {
+	position: absolute; left: 0; top: 0;
+	width: 110px;
+	min-height: 1em;
+}
+.aw-team .eventlist .eventrow .cont {
+	margin-left: 115px;
+}
+.aw-team .eventlist .eventrow .dsc {
+	margin-top: 5px;
+	height: 63px;
+	overflow: hidden; 
+}
+.aw-team .eventlist .eventrow .info {
+    color: #8C8C8C;
+    font-size: 0.9em;
+}
