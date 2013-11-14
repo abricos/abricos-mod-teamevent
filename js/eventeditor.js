@@ -36,31 +36,30 @@ Component.entryPoint = function(NS){
 			this.teamid = teamid;
 			this.eventid = eventid;
 			this.cfg = cfg;
-			this.team = null;
-			this.eventManager = null;
+			this.taData = null;
 		},
 		buildTData: function(teamid, eventid, cfg){
 			return {'cledst': eventid==0?'edstnew': 'edstedit'};
 		},
 		onLoad: function(teamid, eventid, cfg){
 			var __self = this;
-			NS.EventManager.init(cfg['modName'], function(man){
-				if (!L.isValue(man)){ return; }
-				__self.eventManager = man;
-				
+			
+			Brick.mod.team.teamAppDataLoad(teamid, cfg['modName'], 'event', function(taData){
+				if (!L.isValue(taData)){
+					__self.onLoadEvent(null);
+					return;
+				}					
 				if (eventid == 0){
 					var event = new man.EventClass({
 						'tid': teamid,
 						'm': cfg['modName'],
 						'dtl': {}
 					});
-					Brick.mod.team.teamLoad(teamid, function(team){
-						event.setTeam(team);
-						__self.onLoadEvent(event, team);
-					});
+					event.setTeamAppData(taData);
+					__self.onLoadEvent(event);
 				}else{
-					man.eventLoad(eventid, function(event, team){
-						__self.onLoadEvent(event, team);
+					taData.manager.eventLoad(taData, eventid, function(event){
+						__self.onLoadEvent(event);
 					});
 				}
 			});
@@ -73,15 +72,13 @@ Component.entryPoint = function(NS){
 			}
 			return false;
 		},
-		onLoadEvent: function(event, team){
+		onLoadEvent: function(event){
 			this.event = event;
-			this.team = team;
-			
 			this.render();
 		},
 		render: function(){
-			var event = this.event, team = this.team;
-			if (!L.isValue(event) || !L.isValue(team)){ return; }
+			var event = this.event;
+			if (!L.isValue(event)){ return; }
 
 			if (!L.isValue(this.logoWidget)){
 				this.logoWidget = new Brick.mod.team.LogoWidget(this.gel('logo'), event.logo);
@@ -120,12 +117,12 @@ Component.entryPoint = function(NS){
 		},
 		save: function(){
 			var __self = this;
-			var sd = this.getSaveData();
+			var sd = this.getSaveData(), taData = this.event.taData;
 			
 			this.elHide('btns');
 			this.elShow('bloading');
 			
-			this.eventManager.eventSave(this.team.id, sd, function(event){
+			taData.manager.eventSave(taData, sd, function(event){
 				__self.elShow('btns');
 				__self.elHide('bloading');
 				NS.life(__self.cfg['callback'], 'save', event);

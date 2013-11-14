@@ -137,15 +137,14 @@ Component.entryPoint = function(NS){
 		},
 		onLoad: function(teamid, cfg){
 			var __self = this;
-			
 			Brick.mod.team.teamAppDataLoad(teamid, cfg['modName'], 'event', function(taData){
-				__self.onLoadTeamAppData(taData);
+				if (L.isValue(taData)){
+					__self.taData = taData;
+					__self.reloadList();
+				}else{
+					__self.onLoadList(null);
+				}
 			});
-		},
-		onLoadTeamAppData: function(taData){
-			this.taData = taData;
-
-			this.reloadList();
 		},
 		reloadList: function(){
 			this.elShow('loading');

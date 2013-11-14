@@ -169,45 +169,30 @@ Component.entryPoint = function(NS){
 			NS.life(callback, this);
 		},
 		
-		_updateEvent: function(team, d){
+		_updateEvent: function(taData, d){
 			if (!(L.isValue(d) && L.isValue(d['event']))){
 				return null;
 			}
 			var event = new this.EventClass(d['event']);
-			event.setTeam(team);
+			event.setTeamAppData(taData);
 			return event;
 		},
 		
-		eventLoad: function(eventid, callback, cfg){
-			cfg = L.merge({
-				'reload': false
-			}, cfg || {});
-			
+		eventLoad: function(taData, eventid, callback){
 			var __self = this,
 				event = this._cacheEvent[eventid];
 			
-			if (L.isValue(event) && L.isValue(event.detail) && !cfg['reload']){
-				NS.life(callback, event, event.team);
+			if (L.isValue(event) && L.isValue(event.detail)){
+				NS.life(callback, event);
 				return;
 			}			
-			
 			this.ajax({
 				'do': 'event',
+				'teamid': taData.team.id,
 				'eventid': eventid
 			}, function(d){
-				
-				if (!L.isValue(d) || !L.isValue(d['event'])){
-					NS.life(callback, null, null);
-					return;
-				}
-				Brick.mod.team.teamLoad(d['event']['tid'], function(team){
-					var event = null;
-					if (L.isValue(team)){
-						event = __self._updateEvent(team, d);
-						__self._cacheEvent[eventid] = event;
-					}
-					NS.life(callback, event, team);
-				});
+				var event = __self._updateEvent(taData, d);
+				NS.life(callback, event);
 			});			
 		},
 		
@@ -239,11 +224,11 @@ Component.entryPoint = function(NS){
 			});
 		},
 		
-		eventSave: function(teamid, sd, callback){
+		eventSave: function(taData, sd, callback){
 			var __self = this;
 			this.ajax({
 				'do': 'eventsave',
-				'teamid': teamid,
+				'teamid': taData.team.id,
 				'savedata': sd
 			}, function(d){
 				var event = __self._updateEvent(d);
@@ -263,16 +248,6 @@ Component.entryPoint = function(NS){
 	});
 	NS.EventManager = EventManager;
 
-	/*
-	EventManager.get = function(modName){
-		var man = Brick.mod[modName]['eventManager'];
-		if (!L.isObject(man)){
-			man = null;
-		}
-		return man;
-	};
-	/**/
-	
 	EventManager.init = function(modName, callback){
 		Brick.mod.team.app.load(modName, "event", function(man){
 			NS.life(callback, man);

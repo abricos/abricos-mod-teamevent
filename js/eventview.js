@@ -30,6 +30,7 @@ Component.entryPoint = function(NS){
 	};
 	YAHOO.extend(TeamEventViewWidget, Brick.mod.widget.Widget, {
 		init: function(teamid, eventid, cfg){
+			this.teamid = teamid;
 			this.eventid = eventid;
 			this.cfg = cfg;
 			this.event = null;
@@ -38,18 +39,18 @@ Component.entryPoint = function(NS){
 		},
 		onLoad: function(teamid, eventid, cfg){
 			var __self = this;
-			NS.EventManager.init(cfg['modName'], function(man){
-				if (!L.isValue(man)){ return; }
-				
-				__self.eventManager = man;
-				man.eventLoad(eventid, function(event, team){
-					__self.onLoadEvent(event, team);
+			Brick.mod.team.teamAppDataLoad(teamid, cfg['modName'], 'event', function(taData){
+				if (!L.isValue(taData)){
+					__self.onLoadEvent(null);
+					return;
+				}
+				taData.manager.eventLoad(taData, eventid, function(event){
+					__self.onLoadEvent(event);
 				});
 			});
 		},
-		onLoadEvent: function(event, team){
+		onLoadEvent: function(event){
 			this.event = event;
-			this.team = team;
 			
 			this.elHide('loading');
 			this.render();
@@ -57,18 +58,15 @@ Component.entryPoint = function(NS){
 		render: function(){
 			this.elHide('loading,nullitem,rlwrap');
 			this.elHide('fldsite,flddescript,fldemail');
-
-			var event = this.event, team = this.team;
-
-			if (!L.isValue(event)){
-				this.elShow('nullitem');
-			}else{
-				this.elShow('rlwrap');
-			}
-			if (L.isNull(event)){ return; }
 			
-			this.elSetVisible('btns', team.role.isAdmin);
-
+			if (!L.isValue(this.event)){
+				this.elShow('nullitem');
+				return;
+			}
+			this.elShow('rlwrap');
+			
+			var event = this.event, team = event.taData.team;
+			
 			var sFDate = '', sFTDate = '';
 			if (event.fromDate > 0){
 				sFDate = Brick.dateExt.convert(event.fromDate, 3, true);
@@ -83,7 +81,12 @@ Component.entryPoint = function(NS){
 				'descript': event.descript
 			});
 			
-			// this.elSetVisible('fldemail', isem(team.email));
+			if (team.role.isAdmin){
+				this.elShow('btns');
+				var mcfg = event.taData.manager.cfg['eventEditor'];
+				this.componentLoad(mcfg['module'], mcfg['component'], function(){
+				}, {'hide': 'bbtns', 'show': 'edloading'});
+			}
 		},
 		onClick: function(el, tp){
 			switch(el.id){
@@ -101,23 +104,24 @@ Component.entryPoint = function(NS){
 		showEventEditor: function(){
 			this.closeEditors();
 
-			var __self = this, cfg = this.cfg, mcfg = this.eventManager.cfg['eventEditor'];
+			var __self = this, cfg = this.cfg,
+				event = this.event,
+				taData = event.taData,
+				mcfg = taData.manager.cfg['eventEditor'];
 
-			this.componentLoad(mcfg['module'], mcfg['component'], function(){
-				__self.elHide('btns,view');
+			this.elHide('btns,view');
 
-				__self._editor = new Brick.mod[mcfg['module']][mcfg['widget']](__self.gel('editor'), __self.team.id, __self.event.id, {
-					'modName': cfg['modName'],
-					'callback': function(act){
-						__self.closeEditors();
-				
-						if (act == 'save'){ 
-							__self.render();
-							Brick.Page.reload();
-						}
+			this._editor = new Brick.mod[mcfg['module']][mcfg['widget']](this.gel('editor'), taData.team.id, event.id, {
+				'modName': cfg['modName'],
+				'callback': function(act){
+					__self.closeEditors();
+			
+					if (act == 'save'){ 
+						__self.render();
+						Brick.Page.reload();
 					}
-				});
-			}, {'hide': 'bbtns', 'show': 'edloading'});
+				}
+			});
 		},
 		showRemovePanel: function(){
 			/*
