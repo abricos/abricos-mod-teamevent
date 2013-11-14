@@ -50,7 +50,7 @@ Component.entryPoint = function(NS){
 					return;
 				}					
 				if (eventid == 0){
-					var event = new man.EventClass({
+					var event = new taData.manager.EventClass({
 						'tid': teamid,
 						'm': cfg['modName'],
 						'dtl': {}
