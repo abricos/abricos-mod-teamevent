@@ -12,7 +12,7 @@
 class TeamEventModule extends Ab_Module {
 
 	public function __construct(){
-		$this->version = "0.1";
+		$this->version = "0.1.0";
 		$this->name = "teamevent";
 		$this->permission = new TeamEventPermission($this);
 	}
